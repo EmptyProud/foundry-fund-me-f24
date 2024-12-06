@@ -34,32 +34,17 @@ contract HelperConfig is
     }
 
     // It can return a configuration for everything we need in Sepolia
-    function getSepoliaEthConfig()
-        public
-        pure
-        returns (NetworkConfig memory priceFeed)
-    {
-        NetworkConfig memory sepoliaEthConfig = NetworkConfig({
-            priceFeed: 0x694AA1769357215DE4FAC081bf1f309aDC325306
-        });
+    function getSepoliaEthConfig() public pure returns (NetworkConfig memory priceFeed) {
+        NetworkConfig memory sepoliaEthConfig = NetworkConfig({priceFeed: 0x694AA1769357215DE4FAC081bf1f309aDC325306});
         return sepoliaEthConfig;
     }
 
-    function getEthereumEthConfig()
-        public
-        pure
-        returns (NetworkConfig memory priceFeed)
-    {
-        NetworkConfig memory ethereumEthConfig = NetworkConfig({
-            priceFeed: 0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419
-        });
+    function getEthereumEthConfig() public pure returns (NetworkConfig memory priceFeed) {
+        NetworkConfig memory ethereumEthConfig = NetworkConfig({priceFeed: 0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419});
         return ethereumEthConfig;
     }
 
-    function getOrCreateAnvilEthConfig()
-        public
-        returns (NetworkConfig memory priceFeed)
-    {
+    function getOrCreateAnvilEthConfig() public returns (NetworkConfig memory priceFeed) {
         if (activeNetworkConfig.priceFeed != address(0)) {
             // This checks that have we set the price feed up to something other than 0
             // Address defaults to address(0), so if it is not address(0), means that we've already set it up
@@ -75,17 +60,12 @@ contract HelperConfig is
 
         vm.startBroadcast();
         // we will deploy our own price feed here so we need a price feed contract
-        MockV3Aggregator mockPriceFeed = new MockV3Aggregator(
-            DECIMALS,
-            INITIAL_PRICE
-        );
+        MockV3Aggregator mockPriceFeed = new MockV3Aggregator(DECIMALS, INITIAL_PRICE);
         vm.stopBroadcast();
 
         // Dont put this in the broadcast section as we r not going to deploy it on the anvil chain
         // In the broadcast section, we only deploy the mock price feed contract on anvil chain so that we can use it
-        NetworkConfig memory anvilConfig = NetworkConfig({
-            priceFeed: address(mockPriceFeed)
-        });
+        NetworkConfig memory anvilConfig = NetworkConfig({priceFeed: address(mockPriceFeed)});
         return anvilConfig;
     }
 }

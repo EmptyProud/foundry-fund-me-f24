@@ -10,8 +10,7 @@ error FundMe__NotOwner();
 contract FundMe {
     using PriceConverter for uint256;
 
-    mapping(address funder => uint256 amountFunded)
-        private s_addressToAmountFunded;
+    mapping(address funder => uint256 amountFunded) private s_addressToAmountFunded;
     address[] private s_fundersAddress;
 
     address private immutable i_owner;
@@ -24,16 +23,11 @@ contract FundMe {
     }
 
     function fund() public payable {
-        require(
-            msg.value.convertToUSD(s_priceFeed) > MINIMUM_USD,
-            "You didn't reach the minimum fund amount."
-        );
+        require(msg.value.convertToUSD(s_priceFeed) > MINIMUM_USD, "You didn't reach the minimum fund amount.");
 
         s_fundersAddress.push(msg.sender);
 
-        s_addressToAmountFunded[msg.sender] =
-            s_addressToAmountFunded[msg.sender] +
-            msg.value;
+        s_addressToAmountFunded[msg.sender] = s_addressToAmountFunded[msg.sender] + msg.value;
     }
 
     function getVersion() public returns (uint256) {
@@ -50,37 +44,25 @@ contract FundMe {
     }
 
     function withdraw() public onlyAdmin {
-        for (
-            uint256 funderIndex = 0;
-            funderIndex < s_fundersAddress.length;
-            funderIndex++
-        ) {
+        for (uint256 funderIndex = 0; funderIndex < s_fundersAddress.length; funderIndex++) {
             s_addressToAmountFunded[s_fundersAddress[funderIndex]] = 0;
         }
 
         s_fundersAddress = new address[](0);
 
-        (bool callStatus, ) = payable(msg.sender).call{
-            value: address(this).balance
-        }("");
+        (bool callStatus,) = payable(msg.sender).call{value: address(this).balance}("");
         require(callStatus, "Fail transaction.");
     }
 
     function cheaperWithdraw() public onlyAdmin {
         // For gas efficient, We read the length one time only from the storage and read one more time for every loop
         uint256 fundersAddressLength = s_fundersAddress.length;
-        for (
-            uint256 funderIndex = 0;
-            funderIndex < fundersAddressLength;
-            funderIndex++
-        ) {
+        for (uint256 funderIndex = 0; funderIndex < fundersAddressLength; funderIndex++) {
             s_addressToAmountFunded[s_fundersAddress[funderIndex]] = 0;
         }
         s_fundersAddress = new address[](0);
 
-        (bool callStatus, ) = payable(msg.sender).call{
-            value: address(this).balance
-        }("");
+        (bool callStatus,) = payable(msg.sender).call{value: address(this).balance}("");
         require(callStatus, "Fail transaction.");
     }
 
@@ -95,10 +77,7 @@ contract FundMe {
     /**
      * View / Pure functions (Getters)
      */
-
-    function getAddressToAmountFunded(
-        address fundingAddress
-    ) external view returns (uint256) {
+    function getAddressToAmountFunded(address fundingAddress) external view returns (uint256) {
         return s_addressToAmountFunded[fundingAddress];
     }
 
