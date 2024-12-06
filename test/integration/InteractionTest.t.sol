@@ -2,7 +2,6 @@
 pragma solidity 0.8.28;
 
 // The forge standard library has couple of standard packages that we can use to make running our tests easier
-// That assert command for example is something that foundry automatically has built in
 import {Test, console} from "forge-std/Test.sol";
 
 // To deploy our contract in the setUp() function, we need to import our contract
@@ -31,8 +30,6 @@ contract InteractionsTest is Test {
 
     function testUserCanFundInteractions() public {
         FundFundMe fundFundMe = new FundFundMe();
-        // vm.prank(USER);
-        // vm.deal(USER, 1 ether);
         fundFundMe.fundFundMe(address(fundMe)); // we need to go for the fundFundMe() function instead of the run() function
         // Then only we will be able to add my own address (fundMe) to the function
 
