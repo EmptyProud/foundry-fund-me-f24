@@ -12,3 +12,8 @@ docs/
 
 # Dotenv file
 .env
+
+broadcast/
+zkout/
+
+Remark_Foundry_Fund_Me.md
